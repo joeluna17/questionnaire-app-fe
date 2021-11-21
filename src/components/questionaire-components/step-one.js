@@ -7,6 +7,8 @@ import { faCheck } from '@fortawesome/free-solid-svg-icons';
 const StepOne = (props) => {
   const {
     register,
+    getValues,
+    setValue,
     handleSubmit,
     formState: { errors, isValid },
   } = useForm({
@@ -14,14 +16,36 @@ const StepOne = (props) => {
     defaultValues: {
       firstName: '',
       lastName: '',
+      subscribeEmail: false,
     },
   });
+  useEffect(() => {
+    props.userData.userInfo.firstName && setValue('firstName', props.userData.userInfo.firstName);
+    props.userData.userInfo.lastName && setValue('lastName', props.userData.userInfo.lastName);
+    props.userData.userInfo.subscribeToEmail && setValue('subscribeEmail', props.userData.userInfo.subscribeToEmail);
+  }, []);
 
   useEffect(() => {
     console.log(isValid);
-    console.log(errors);
-    isValid && props.handleIsNextDisabled(!isValid);
-  }, [isValid, errors]);
+    props.handleIsNextDisabled(!isValid);
+    isValid && mapFormToUserData();
+  }, [isValid]);
+
+  const mapFormToUserData = () => {
+    const fName = getValues('firstName');
+    const lName = getValues('lastName');
+    const subscribeEmail = getValues('subscribeEmail');
+
+    const submitData = {
+      ...props.userData,
+      userInfo: {
+        firstName: fName,
+        lastName: lName,
+        subscribeToEmail: subscribeEmail,
+      },
+    };
+    props.handleUpdateUserData(submitData);
+  };
 
   return (
     <StepWrapper>
@@ -45,10 +69,9 @@ const StepOne = (props) => {
 
         <span style={{ display: 'flex', alignItems: 'center', margin: '2% 0' }}>
           <label style={{ marginRight: '5px' }}>Subscribe to email on deals and new products?</label>
-          <input style={{ width: '20px', height: '20px' }} type="checkbox" />
+          <input style={{ width: '20px', height: '20px' }} type="checkbox" {...register('subscribeEmail', { required: false })} />
         </span>
         {isValid && <FontAwesomeIcon icon={faCheck} style={{ color: '#0a8c01', fontSize: '30px', margin: '2% 0' }} />}
-        <p>Form Valid : {JSON.stringify(isValid)}</p>
       </FormWrapper>
     </StepWrapper>
   );
