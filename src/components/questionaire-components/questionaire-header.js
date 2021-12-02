@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
 const QuestionaireHeader = (props) => {
-    const [stepData, setStepData] = useState({});
+  const [stepData, setStepData] = useState({});
 
   return (
     <QuestionaireHeaderWrapper>

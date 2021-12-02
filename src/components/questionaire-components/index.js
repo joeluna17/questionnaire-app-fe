@@ -9,6 +9,7 @@ import StepTwo from './step-two';
 import StepThree from './step-three';
 import StepFour from './step-four';
 import FinalStep from './final-step';
+import Steps from './steps';
 
 const userDataInit = {
   userInfo: {
@@ -31,11 +32,23 @@ const userDataInit = {
 };
 
 const Qestionaire = (props) => {
+  const initSteps = [
+    { name: 'Step One', isComplete: false },
+    { name: 'Step Two', isComplete: false },
+    { name: 'Step Three', isComplete: false },
+    { name: 'Step Four', isComplete: false },
+    { name: 'Step Five', isComplete: false },
+  ];
+
   const [userData, setUserData] = useState(userDataInit);
   const [isNextDisabled, setIsNextDisabled] = useState(true);
+  const [steps, setSteps] = useState(initSteps);
+
+  useEffect(() => {
+    console.log(`is disabled updated to : ${isNextDisabled}`);
+  }, [isNextDisabled]);
 
   const handleIsNextDisabled = (setIsDiabled) => {
-    console.log(setIsDiabled);
     setIsNextDisabled(setIsDiabled);
   };
 
@@ -44,12 +57,21 @@ const Qestionaire = (props) => {
     setUserData(userData);
   };
 
-  useEffect(() => {
-    console.log(`is disabled updated to : ${isNextDisabled}`);
-  }, [isNextDisabled]);
+  const handleUpdateSteps = (stepNum) => {
+    var newSteps = steps.map((step, index) => {
+      if (index <= stepNum) {
+        step.isComplete = true;
+      } else {
+        step.isComplete = false;
+      }
+      return step;
+    });
+    setSteps(newSteps);
+  };
 
   return (
     <QuestionaireWrapper>
+      <Steps initSteps={steps} />
       <QuestionaireHeader />
 
       <Routes>
@@ -60,7 +82,7 @@ const Qestionaire = (props) => {
         <Route path="final-step" element={<FinalStep />} />
       </Routes>
 
-      <QuestionaireFooter isNextDisabled={isNextDisabled} />
+      <QuestionaireFooter isNextDisabled={isNextDisabled} handleUpdateSteps={handleUpdateSteps} />
     </QuestionaireWrapper>
   );
 };

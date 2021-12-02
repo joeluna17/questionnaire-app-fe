@@ -5,12 +5,16 @@ import styled from 'styled-components';
 const QuestionaireFooter = (props) => {
   let navigate = useNavigate();
   const [currentStep, setCurrentState] = useState(1);
+  useEffect(() => {
+    props.handleUpdateSteps(0);
+  }, []);
 
   console.log(`is disabled updated to : ${props.isNextDisabled}`);
 
   const handleNext = (e) => {
     e.preventDefault();
     const nextStep = currentStep !== 4 ? currentStep + 1 : 4; // We can refactor this logic to have a array of step data and use the array lenght to check for validity here and in the handlePrevious as more steps may be required.
+    props.handleUpdateSteps(nextStep - 1);
     setCurrentState(nextStep);
     nextStep !== 5 ? navigate(`step-${nextStep}`) : navigate('final-step');
   };
@@ -18,6 +22,7 @@ const QuestionaireFooter = (props) => {
   const handlePrevious = (e) => {
     e.preventDefault();
     const prevStep = currentStep !== 1 ? currentStep - 1 : 1;
+    props.handleUpdateSteps(prevStep - 1);
     setCurrentState(prevStep);
     prevStep !== 1 ? navigate(`step-${prevStep}`) : navigate('/questionaire/');
   };
